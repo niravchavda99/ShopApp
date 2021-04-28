@@ -8,13 +8,13 @@ class MainDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final username = Provider.of<Auth>(context, listen: false).username;
+    final name = Provider.of<Auth>(context, listen: false).user.name;
 
     return Drawer(
       child: Column(
         children: [
           AppBar(
-            title: Text('Hello $username!'),
+            title: Text('Hello $name!'),
             automaticallyImplyLeading: false,
           ),
           InkWell(

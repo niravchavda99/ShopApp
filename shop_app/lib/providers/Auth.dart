@@ -28,7 +28,7 @@ class Auth with ChangeNotifier {
   }
 
   User get user {
-    Users.findUser(username, email);
+    return Users.findUser(username, email);
   }
 
   Future<void> _authenticate(

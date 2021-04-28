@@ -207,6 +207,7 @@ class _AuthScreenState extends State<AuthScreen> {
       minimumSize: MaterialStateProperty.resolveWith((_) => Size(40, 40)),
       foregroundColor: MaterialStateProperty.resolveWith((_) => fgColor),
       backgroundColor: MaterialStateProperty.resolveWith((_) => bgColor),
+      elevation: MaterialStateProperty.resolveWith((_) => 5),
     );
   }
 }

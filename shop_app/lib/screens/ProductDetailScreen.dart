@@ -4,7 +4,10 @@ import 'package:provider/provider.dart';
 import 'package:shop_app/models/Offer.dart';
 import 'package:shop_app/models/Product.dart';
 import 'package:shop_app/providers/Auth.dart';
+import 'package:shop_app/providers/Cart.dart';
 import 'package:shop_app/providers/Favorites.dart';
+import 'package:shop_app/utils/Utils.dart';
+import 'package:shop_app/widgets/AddToCartDropdown.dart';
 import 'package:shop_app/widgets/ProductRating.dart';
 
 class ProductDetailScreen extends StatefulWidget {
@@ -24,9 +27,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     final product = ModalRoute.of(context).settings.arguments as Product;
     final imagesCount = product.imageUrl.length;
     final username = Provider.of<Auth>(context, listen: false).username;
-    final discountedPrice =
-        (product.price - (product.price * product.discount / 100)).toInt();
-    final discountGiven = product.price - discountedPrice;
 
     setState(() {
       isFavorite =
@@ -66,102 +66,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     child: _buildImageCarousel(imagesCount, context, product),
                     color: Colors.white,
                   ),
-                  Container(
-                    color: Colors.white,
-                    padding:
-                        const EdgeInsets.only(left: 20, top: 20, bottom: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          product.title,
-                          style: TextStyle(
-                            fontSize: 22,
-                          ),
-                        ),
-                        SizedBox(height: 5),
-                        _buildRatingBadge(product.rating),
-                        SizedBox(height: 10),
-                        Row(
-                          children: [
-                            Text(
-                              '₹',
-                              style: TextStyle(fontSize: 15),
-                            ),
-                            Text(
-                              discountedPrice.toString(),
-                              style: TextStyle(fontSize: 25),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 5),
-                        Row(
-                          children: [
-                            Text(
-                              'MRP: ',
-                              style: TextStyle(fontSize: 18),
-                            ),
-                            Text(
-                              '₹' + product.price.toString(),
-                              style: TextStyle(
-                                decoration: TextDecoration.lineThrough,
-                                fontSize: 18,
-                              ),
-                            ),
-                            SizedBox(width: 10),
-                            Text(
-                              'Save ₹$discountGiven',
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.red[800],
-                                fontStyle: FontStyle.italic,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 5),
-                        Text('No Cost EMI Available.'),
-                        SizedBox(height: 5),
-                        Text('Free delivery'),
-                        SizedBox(height: 10),
-                        product.numberInStock > 9
-                            ? Text('Left in stock: ${product.numberInStock}')
-                            : Text(
-                                'Hurry, Only ${product.numberInStock} left!',
-                                style: TextStyle(
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                      ],
-                    ),
-                  ),
+                  _buildInfo(product),
                   SizedBox(height: 10),
                   _buildOffers(product),
                   SizedBox(height: 10),
-                  Container(
-                    color: Colors.white,
-                    width: double.infinity,
-                    alignment: Alignment.centerLeft,
-                    padding:
-                        const EdgeInsets.only(left: 20, top: 10, bottom: 10),
-                    child: Column(
-                      children: [
-                        Container(
-                          alignment: Alignment.centerLeft,
-                          padding: const EdgeInsets.symmetric(vertical: 20),
-                          child: Text(
-                            'Description',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                        Text(product.description),
-                      ],
-                    ),
-                  ),
+                  _buildDescription(product),
+                  SizedBox(height: 10),
+                  _buildHighlights(product),
                   SizedBox(height: 10),
                 ],
               ),
@@ -170,6 +81,167 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           _buildBottomButtons(context, username, product),
         ],
       ),
+    );
+  }
+
+  Widget _buildInfo(Product product) {
+    final discountedPrice =
+        (product.price - (product.price * product.discount / 100)).toInt();
+    final discountGiven = product.price - discountedPrice;
+
+    return Container(
+      color: Colors.white,
+      padding: const EdgeInsets.only(left: 20, top: 20, bottom: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            product.title,
+            style: TextStyle(
+              fontSize: 22,
+            ),
+          ),
+          SizedBox(height: 5),
+          _buildRatingBadge(product.rating),
+          SizedBox(height: 10),
+          Row(
+            children: [
+              Text(
+                '₹',
+                style: TextStyle(fontSize: 15),
+              ),
+              Text(
+                discountedPrice.toString(),
+                style: TextStyle(fontSize: 25),
+              ),
+            ],
+          ),
+          SizedBox(height: 5),
+          Row(
+            children: [
+              Text(
+                'MRP: ',
+                style: TextStyle(fontSize: 18),
+              ),
+              Text(
+                '₹' + product.price.toString(),
+                style: TextStyle(
+                  decoration: TextDecoration.lineThrough,
+                  fontSize: 18,
+                ),
+              ),
+              SizedBox(width: 10),
+              Text(
+                'Save ₹$discountGiven',
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.red[800],
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 5),
+          Text('No Cost EMI Available.'),
+          SizedBox(height: 5),
+          Text('Free delivery'),
+          SizedBox(height: 10),
+          product.numberInStock > 9
+              ? Text('Left in stock: ${product.numberInStock}')
+              : Text(
+                  'Hurry, Only ${product.numberInStock} left!',
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+          AddToCartDropdown(product: product),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHighlights(Product product) {
+    return Container(
+      color: Colors.white,
+      width: double.infinity,
+      alignment: Alignment.centerLeft,
+      padding: const EdgeInsets.only(left: 20, top: 10, bottom: 10),
+      child: Column(
+        children: [
+          Container(
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            child: Text(
+              'Highlights',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+            ),
+          ),
+          Divider(),
+          ...product.features.entries
+              .map((e) => Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            Expanded(
+                                child: Text(
+                              e.key,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            )),
+                            Expanded(child: Text(e.value)),
+                          ],
+                        ),
+                      ),
+                      Divider(),
+                    ],
+                  ))
+              .toList(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDescription(Product product) {
+    return Container(
+      color: Colors.white,
+      width: double.infinity,
+      alignment: Alignment.centerLeft,
+      padding: const EdgeInsets.only(left: 20, top: 10, bottom: 10),
+      child: Column(
+        children: [
+          Container(
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            child: Text(
+              'Description',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+            ),
+          ),
+          Text(product.description),
+        ],
+      ),
+    );
+  }
+
+  ButtonStyle _getButtonStyle(Color fgColor, Color bgColor, Color ovColor) {
+    return ButtonStyle(
+      shape: MaterialStateProperty.resolveWith(
+          (_) => RoundedRectangleBorder(borderRadius: BorderRadius.zero)),
+      overlayColor: MaterialStateProperty.resolveWith((_) => ovColor),
+      minimumSize: MaterialStateProperty.resolveWith((_) => Size(60, 60)),
+      backgroundColor: MaterialStateProperty.resolveWith((_) => bgColor),
+      foregroundColor: MaterialStateProperty.resolveWith((_) => fgColor),
+      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
     );
   }
 
@@ -194,19 +266,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               ),
               label:
                   Text(!isFavorite ? 'Add to Favorites' : 'Added to Favorites'),
-              style: ButtonStyle(
-                shape: MaterialStateProperty.resolveWith((_) =>
-                    RoundedRectangleBorder(borderRadius: BorderRadius.zero)),
-                overlayColor: MaterialStateProperty.resolveWith(
-                    (_) => Theme.of(context).accentColor.withOpacity(0.3)),
-                minimumSize:
-                    MaterialStateProperty.resolveWith((_) => Size(60, 60)),
-                backgroundColor:
-                    MaterialStateProperty.resolveWith((_) => Colors.white),
-                foregroundColor:
-                    MaterialStateProperty.resolveWith((_) => Colors.black),
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              ),
+              style: _getButtonStyle(Colors.black, Colors.white,
+                  Theme.of(context).accentColor.withOpacity(0.3)),
               onPressed: () {
                 setState(() {
                   if (!isFavorite)
@@ -224,20 +285,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             child: ElevatedButton.icon(
               icon: Icon(Icons.shopping_cart),
               label: Text('Add to Cart'),
-              style: ButtonStyle(
-                shape: MaterialStateProperty.resolveWith((_) =>
-                    RoundedRectangleBorder(borderRadius: BorderRadius.zero)),
-                overlayColor: MaterialStateProperty.resolveWith(
-                    (_) => Colors.white.withOpacity(0.3)),
-                minimumSize:
-                    MaterialStateProperty.resolveWith((_) => Size(60, 60)),
-                backgroundColor: MaterialStateProperty.resolveWith(
-                    (_) => Theme.of(context).accentColor),
-                foregroundColor:
-                    MaterialStateProperty.resolveWith((_) => Colors.black),
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              ),
-              onPressed: () {},
+              style: _getButtonStyle(Colors.black,
+                  Theme.of(context).accentColor, Colors.white.withOpacity(0.3)),
+              onPressed: () async {
+                await Provider.of<Cart>(context, listen: false).addItem(
+                    productId: product.id, price: product.price, qty: 1);
+
+                Utils.showErrorDialog(context, 'Added to Cart',
+                    'Added ${product.title} to cart.');
+              },
             ),
           ),
         ],
@@ -297,7 +353,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               'Available Offers',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 16,
+                fontSize: 18,
               ),
             ),
           ),

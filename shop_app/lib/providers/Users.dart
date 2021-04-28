@@ -8,16 +8,19 @@ class Users with ChangeNotifier {
       email: 'test1@test.com',
       password: 'testtest1',
       username: 'test1',
+      name: 'Test User 1',
     ),
     User(
       email: 'test2@test.com',
       password: 'testtest2',
       username: 'test2',
+      name: 'Test User 2',
     ),
     User(
       email: 'test3@test.com',
       password: 'testtest3',
       username: 'test3',
+      name: 'Test User 3',
     ),
   ];
 

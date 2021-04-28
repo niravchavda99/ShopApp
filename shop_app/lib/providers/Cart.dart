@@ -8,13 +8,11 @@ class Cart with ChangeNotifier {
     return {..._items};
   }
 
-  void addItem(String productId, double price) {
+  Future<void> addItem({String productId, double price, int qty = 1}) async {
     if (_items.containsKey(productId)) {
       _items.update(
         productId,
         (existingCartItem) => CartItem(
-          id: existingCartItem.id,
-          productId: existingCartItem.productId,
           price: existingCartItem.price,
           qty: existingCartItem.qty + 1,
         ),
@@ -23,8 +21,6 @@ class Cart with ChangeNotifier {
       _items.putIfAbsent(
         productId,
         () => CartItem(
-          id: DateTime.now().toString(),
-          productId: productId,
           price: price,
           qty: 1,
         ),
@@ -54,8 +50,6 @@ class Cart with ChangeNotifier {
       _items.update(
         productId,
         (existingCartItem) => CartItem(
-          id: existingCartItem.id,
-          productId: existingCartItem.productId,
           price: existingCartItem.price,
           qty: existingCartItem.qty - 1,
         ),
