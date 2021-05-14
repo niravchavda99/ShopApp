@@ -37,4 +37,12 @@ class Product {
   List<Offer> getOffers(OfferType type) {
     return offers.where((o) => o.offerType == type).toList();
   }
+
+  double get discountedPrice {
+    return (price - (price * discount / 100));
+  }
+
+  int get discountGiven {
+    return price.toInt() - discountedPrice.toInt();
+  }
 }

@@ -6,6 +6,7 @@ import 'package:shop_app/models/Product.dart';
 import 'package:shop_app/providers/Auth.dart';
 import 'package:shop_app/providers/Cart.dart';
 import 'package:shop_app/providers/Favorites.dart';
+import 'package:shop_app/screens/CartScreen.dart';
 import 'package:shop_app/utils/Utils.dart';
 import 'package:shop_app/widgets/AddToCartDropdown.dart';
 import 'package:shop_app/widgets/ProductRating.dart';
@@ -146,16 +147,24 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           SizedBox(height: 5),
           Text('Free delivery'),
           SizedBox(height: 10),
-          product.numberInStock > 9
-              ? Text('Left in stock: ${product.numberInStock}')
-              : Text(
-                  'Hurry, Only ${product.numberInStock} left!',
+          product.numberInStock < 1
+              ? Text(
+                  'Out of Stock!',
                   style: TextStyle(
                     color: Colors.red,
                     fontWeight: FontWeight.bold,
                   ),
-                ),
-          AddToCartDropdown(product: product),
+                )
+              : product.numberInStock > 9
+                  ? Text('Left in stock: ${product.numberInStock}')
+                  : Text(
+                      'Hurry, Only ${product.numberInStock} left!',
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+          if (product.numberInStock > 0) AddToCartDropdown(product: product),
         ],
       ),
     );
@@ -269,6 +278,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               style: _getButtonStyle(Colors.black, Colors.white,
                   Theme.of(context).accentColor.withOpacity(0.3)),
               onPressed: () {
+                _buildFavoriteSnackBar(context);
                 setState(() {
                   if (!isFavorite)
                     Provider.of<Favorites>(context, listen: false)
@@ -285,16 +295,78 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             child: ElevatedButton.icon(
               icon: Icon(Icons.shopping_cart),
               label: Text('Add to Cart'),
-              style: _getButtonStyle(Colors.black,
+              style: _getButtonStyle(Colors.white,
                   Theme.of(context).accentColor, Colors.white.withOpacity(0.3)),
-              onPressed: () async {
-                await Provider.of<Cart>(context, listen: false).addItem(
-                    productId: product.id, price: product.price, qty: 1);
 
-                Utils.showErrorDialog(context, 'Added to Cart',
-                    'Added ${product.title} to cart.');
+              // style: _getButtonStyle(Colors.black,
+              // Theme.of(context).accentColor, Colors.white.withOpacity(0.3)),
+              onPressed: () async {
+                if (product.numberInStock < 1) {
+                  Utils.showSnackBar(
+                      context, Text('This item is out of stock!'));
+                  return;
+                }
+
+                await Provider.of<Cart>(context, listen: false)
+                    .addItem(product: product, qty: 1);
+                _buildCartSnackBar(context);
               },
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _buildFavoriteSnackBar(BuildContext context) {
+    return Utils.showSnackBar(
+      context,
+      Row(
+        children: [
+          Icon(
+            Icons.favorite,
+            color: Colors.white,
+          ),
+          Container(
+            margin: const EdgeInsets.only(left: 10),
+            child: Text(!isFavorite
+                ? 'Added to favorites!'
+                : 'Removed from favorites!'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _buildCartSnackBar(BuildContext context) {
+    return Utils.showSnackBar(
+      context,
+      Row(
+        children: [
+          Expanded(
+            child: Row(
+              children: [
+                Icon(
+                  Icons.check,
+                  color: Colors.white,
+                ),
+                Container(
+                  margin: const EdgeInsets.only(left: 10),
+                  child: Text('Added to Cart'),
+                ),
+              ],
+            ),
+          ),
+          OutlinedButton(
+            style: OutlinedButton.styleFrom(
+              primary: Colors.white,
+              side: BorderSide(color: Colors.white),
+            ),
+            child: Text('View Cart'),
+            onPressed: () {
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              Navigator.of(context).pushNamed(CartScreen.routeName);
+            },
           ),
         ],
       ),

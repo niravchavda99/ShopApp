@@ -18,6 +18,7 @@ class _AuthScreenState extends State<AuthScreen> {
   final _formKey = GlobalKey<FormState>();
   final _passwordController = TextEditingController();
   Map<String, String> _authData = {
+    'name': '',
     'email': '',
     'password': '',
   };
@@ -58,6 +59,21 @@ class _AuthScreenState extends State<AuthScreen> {
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
+                          if (_authMode == AuthMode.SignUp)
+                            TextFormField(
+                              decoration: InputDecoration(
+                                labelText: 'Name',
+                                icon: Icon(Icons.person),
+                              ),
+                              validator: (value) {
+                                if (value.isEmpty)
+                                  return 'Please provide a Username or an e-mail!';
+                                return null;
+                              },
+                              onSaved: (value) {
+                                _authData['email'] = value;
+                              },
+                            ),
                           TextFormField(
                             decoration: InputDecoration(
                               labelText: _authMode == AuthMode.Login
@@ -167,8 +183,8 @@ class _AuthScreenState extends State<AuthScreen> {
         await Provider.of<Auth>(context, listen: false).login(
             _authData['email'], _authData['email'], _authData['password']);
       } else {
-        await Provider.of<Auth>(context, listen: false)
-            .signup(null, _authData['email'], _authData['password']);
+        await Provider.of<Auth>(context, listen: false).signup(
+            _authData['name'], null, _authData['email'], _authData['password']);
       }
       if (Provider.of<Auth>(context, listen: false).isAuth)
         Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);

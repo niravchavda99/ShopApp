@@ -19,8 +19,7 @@ class Utils {
     return _colors.getRange(0, count).toList()..shuffle();
   }
 
-  static void showErrorDialog(
-      BuildContext context, String title, String message) {
+  static void showMessage(BuildContext context, String title, String message) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -36,5 +35,13 @@ class Utils {
         ],
       ),
     );
+  }
+
+  static void showSnackBar(BuildContext context, Widget content) {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: content,
+    ));
   }
 }

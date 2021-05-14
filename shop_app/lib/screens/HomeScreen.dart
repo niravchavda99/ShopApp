@@ -3,8 +3,9 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/providers/Cart.dart';
-import 'package:shop_app/screens/CartScreen.dart';
+import 'package:shop_app/screens/ProductDetailScreen.dart';
 import 'package:shop_app/screens/ProductsOverviewScreen.dart';
+import 'package:shop_app/widgets/CartBadge.dart';
 import '../widgets/MainDrawer.dart';
 
 import '../models/Product.dart';
@@ -15,8 +16,6 @@ import '../providers/Products.dart';
 import '../providers/Categories.dart';
 import '../providers/Brands.dart';
 
-import '../utils/Utils.dart';
-
 class HomeScreen extends StatelessWidget {
   static const routeName = '/home';
 
@@ -26,10 +25,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final brands = Provider.of<Brands>(context).brands;
     final categories = Provider.of<Categories>(context).categories;
-    final products = Provider.of<Products>(context).products;
     final cartItems = Provider.of<Cart>(context).itemCount;
-
-    final randomProducts = _getRandomProducts(products);
 
     return Scaffold(
       appBar: AppBar(
@@ -40,7 +36,7 @@ class HomeScreen extends StatelessWidget {
         centerTitle: true,
         brightness: Brightness.dark,
         actions: [
-          _buildCartBadge(context, cartItems),
+          CartBadge(count: cartItems),
         ],
       ),
       body: Column(
@@ -55,17 +51,18 @@ class HomeScreen extends StatelessWidget {
                   SizedBox(height: 10),
                   _buildShopByBrand(context, brands),
                   SizedBox(height: 10),
-                  Column(
-                    children: randomProducts
-                        .map((p) => Container(
-                              width: double.infinity,
-                              child: Image.network(
-                                p.imageUrl[0],
-                                fit: BoxFit.cover,
-                              ),
-                            ))
-                        .toList(),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    padding: const EdgeInsets.only(left: 16),
+                    child: Text(
+                      'Shop now',
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
                   ),
+                  SizedBox(height: 10),
+                  _buildRandomProducts(context),
                 ],
               ),
             ),
@@ -86,9 +83,77 @@ class HomeScreen extends StatelessWidget {
     return randomNumbers.map((n) => products[n]).toList();
   }
 
+  Widget _buildRandomProducts(BuildContext context) {
+    final products = Provider.of<Products>(context).products;
+    final randomProducts = _getRandomProducts(products);
+    final availableWidth = MediaQuery.of(context).size.width;
+
+    return Column(
+      children: randomProducts
+          .map((p) => Padding(
+                padding: const EdgeInsets.all(8),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    width: availableWidth,
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.of(context).pushNamed(
+                          ProductDetailScreen.routeName,
+                          arguments: p,
+                        );
+                      },
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          FadeInImage(
+                            placeholder:
+                                AssetImage('assets/images/product.png'),
+                            image: NetworkImage(p.imageUrl[0]),
+                            fit: BoxFit.cover,
+                          ),
+                          Positioned(
+                            top: 0,
+                            child: Container(
+                              width: availableWidth,
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              color: Colors.black.withOpacity(0.5),
+                              child: Text(
+                                p.title,
+                                style: TextStyle(color: Colors.white),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 0,
+                            child: Container(
+                              width: availableWidth,
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              color: Colors.black.withOpacity(0.5),
+                              child: Text(
+                                '₹ ${p.discountedPrice.toInt()}',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ))
+          .toList(),
+    );
+  }
+
   Widget _buildRow(BuildContext context, String header,
       List<Map<String, String>> texts, String type) {
-    final colors = Utils.getColors(texts.length);
+    // final colors = Utils.getColors(texts.length);
 
     return Container(
       width: double.infinity,
@@ -127,13 +192,20 @@ class HomeScreen extends StatelessWidget {
                           margin: const EdgeInsets.symmetric(horizontal: 25),
                           child: Column(
                             children: [
-                              CircleAvatar(
-                                backgroundImage:
-                                    NetworkImage(text.value['imageUrl']),
-                                backgroundColor:
-                                    colors[text.key % texts.length],
-                                // child: null,
-                                minRadius: 25,
+                              Container(
+                                padding: const EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: Theme.of(context).primaryColor),
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                                child: CircleAvatar(
+                                  backgroundImage:
+                                      NetworkImage(text.value['imageUrl']),
+                                  backgroundColor: Colors.transparent,
+                                  child: null,
+                                  minRadius: 25,
+                                ),
                               ),
                               SizedBox(height: 5),
                               Text(text.value['name']),
@@ -192,41 +264,6 @@ class HomeScreen extends StatelessWidget {
         style: TextStyle(
           fontSize: 20,
         ),
-      ),
-    );
-  }
-
-  Widget _buildCartBadge(BuildContext context, int count) {
-    return Container(
-      margin: const EdgeInsets.only(top: 5),
-      child: Stack(
-        children: [
-          IconButton(
-            icon: Icon(Icons.shopping_cart),
-            onPressed: () {
-              Navigator.of(context).pushNamed(CartScreen.routeName);
-            },
-          ),
-          Positioned(
-            right: 5,
-            top: 3,
-            child: Container(
-              padding: const EdgeInsets.all(4),
-              width: 18,
-              height: 18,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: Theme.of(context).accentColor,
-                borderRadius: BorderRadius.circular(50),
-              ),
-              child: Text(
-                count.toString(),
-                style: TextStyle(
-                    color: Colors.black, fontSize: (count > 9 ? 10 : 12)),
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

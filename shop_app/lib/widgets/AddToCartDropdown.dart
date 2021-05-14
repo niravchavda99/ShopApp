@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/models/Product.dart';
 import 'package:shop_app/providers/Cart.dart';
+import 'package:shop_app/screens/CartScreen.dart';
 import 'package:shop_app/utils/Utils.dart';
 
 class AddToCartDropdown extends StatefulWidget {
@@ -37,18 +38,17 @@ class _AddToCartDropdownState extends State<AddToCartDropdown> {
               setState(() {
                 _selectedValue = value;
               });
+              print(value);
             },
           ),
           ElevatedButton.icon(
             onPressed: () async {
               await Provider.of<Cart>(context, listen: false).addItem(
-                productId: widget.product.id,
-                price: widget.product.price,
+                product: widget.product,
                 qty: _selectedValue,
               );
 
-              Utils.showErrorDialog(
-                  context, 'Added to Cart', 'Added $_selectedValue item(s).');
+              _buildCartSnackBar(context);
             },
             icon: Icon(
               Icons.shopping_cart,
@@ -58,6 +58,41 @@ class _AddToCartDropdownState extends State<AddToCartDropdown> {
               'Add to Cart',
               style: TextStyle(fontSize: 12),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _buildCartSnackBar(BuildContext context) {
+    return Utils.showSnackBar(
+      context,
+      Row(
+        children: [
+          Expanded(
+            child: Row(
+              children: [
+                Icon(
+                  Icons.check,
+                  color: Colors.white,
+                ),
+                Container(
+                  margin: const EdgeInsets.only(left: 10),
+                  child: Text('Added $_selectedValue item(s).'),
+                ),
+              ],
+            ),
+          ),
+          OutlinedButton(
+            style: OutlinedButton.styleFrom(
+              primary: Colors.white,
+              side: BorderSide(color: Colors.white),
+            ),
+            child: Text('View Cart'),
+            onPressed: () {
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              Navigator.of(context).pushNamed(CartScreen.routeName);
+            },
           ),
         ],
       ),

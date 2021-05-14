@@ -5,10 +5,12 @@ import 'package:shop_app/providers/Brands.dart';
 import 'package:shop_app/providers/Cart.dart';
 import 'package:shop_app/providers/Categories.dart';
 import 'package:shop_app/providers/Favorites.dart';
+import 'package:shop_app/providers/Orders.dart';
 import 'package:shop_app/providers/Products.dart';
 import 'package:shop_app/screens/AuthScreen.dart';
 import 'package:shop_app/screens/CartScreen.dart';
 import 'package:shop_app/screens/HomeScreen.dart';
+import 'package:shop_app/screens/OrdersScreen.dart';
 import 'package:shop_app/screens/ProductDetailScreen.dart';
 import 'package:shop_app/screens/ProductsOverviewScreen.dart';
 import 'package:shop_app/screens/SplashScreen.dart';
@@ -35,31 +37,21 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<Auth>(
-          create: (ctx) => Auth(),
-        ),
-        ChangeNotifierProvider<Products>(
-          create: (ctx) => Products(),
-        ),
-        ChangeNotifierProvider<Categories>(
-          create: (ctx) => Categories(),
-        ),
-        ChangeNotifierProvider<Brands>(
-          create: (ctx) => Brands(),
-        ),
-        ChangeNotifierProvider<Cart>(
-          create: (ctx) => Cart(),
-        ),
-        ChangeNotifierProvider<Favorites>(
-          create: (ctx) => Favorites(),
-        ),
+        ChangeNotifierProvider<Auth>(create: (ctx) => Auth()),
+        ChangeNotifierProvider<Products>(create: (ctx) => Products()),
+        ChangeNotifierProvider<Categories>(create: (ctx) => Categories()),
+        ChangeNotifierProvider<Brands>(create: (ctx) => Brands()),
+        ChangeNotifierProvider<Cart>(create: (ctx) => Cart()),
+        ChangeNotifierProvider<Favorites>(create: (ctx) => Favorites()),
+        ChangeNotifierProvider<Orders>(create: (ctx) => Orders()),
       ],
       child: MaterialApp(
         title: 'Shop App',
         theme: ThemeData(
-          primarySwatch: Colors.teal,
-          // primarySwatch: customColor,
-          accentColor: Colors.amber,
+          // primarySwatch: Colors.teal,
+          primarySwatch: Colors.indigo,
+          // accentColor: Colors.teal,
+          accentColor: customColor,
         ),
         routes: {
           SplashScreen.routeName: (ctx) => SplashScreen(),
@@ -68,6 +60,7 @@ class MyApp extends StatelessWidget {
           ProductsOverviewScreen.routeName: (ctx) => ProductsOverviewScreen(),
           ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
           CartScreen.routeName: (ctx) => CartScreen(),
+          OrdersScreen.routeName: (ctx) => OrdersScreen(),
         },
         initialRoute: SplashScreen.routeName,
       ),

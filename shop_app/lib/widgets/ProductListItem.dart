@@ -11,9 +11,8 @@ class ProductListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final discountedPrice =
-        (product.price - (product.price * product.discount / 100)).toInt();
-    final discountGiven = product.price - discountedPrice;
+    final discountedPrice = product.discountedPrice.toInt();
+    final discountGiven = product.discountGiven;
 
     return ConstrainedBox(
       constraints: BoxConstraints(
@@ -30,12 +29,31 @@ class ProductListItem extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: 130,
-                height: 130,
-                child: Image.network(
-                  product.imageUrl[0],
-                ),
+              Stack(
+                children: [
+                  Container(
+                    width: 130,
+                    height: 130,
+                    child: FadeInImage(
+                      placeholder: AssetImage('assets/images/product.png'),
+                      image: NetworkImage(product.imageUrl[0]),
+                    ),
+                  ),
+                  if (product.numberInStock < 1)
+                    Positioned(
+                      child: Container(
+                        width: 130,
+                        height: 130,
+                        color: Colors.blueGrey.withOpacity(0.2),
+                        child: Opacity(
+                          opacity: 0.7,
+                          child: Image.asset(
+                            'assets/images/outOfStock.png',
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
               ),
               SizedBox(width: 15),
               Container(

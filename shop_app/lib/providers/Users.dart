@@ -24,8 +24,9 @@ class Users with ChangeNotifier {
     ),
   ];
 
-  static User addUser(String email, String password) {
+  static User addUser(String email, String password, String name) {
     final user = User(
+      name: name,
       email: email,
       password: password,
       username: email.substring(0, email.indexOf('@')),
@@ -36,16 +37,13 @@ class Users with ChangeNotifier {
   }
 
   static User find(String username, String email, String password) {
-    return _users.firstWhere(
-        (user) =>
-            (user.username == username || user.email == email) &&
-            user.password == password,
-        orElse: null);
+    return _users.firstWhere((user) =>
+        ((user.username == username) || (user.email == email)) &&
+        (user.password == password));
   }
 
   static User findUser(String username, String email) {
-    return _users.firstWhere(
-        (user) => user.username == username || user.email == user.email,
-        orElse: null);
+    return _users
+        .firstWhere((u) => (u.username == username) || (u.email == email));
   }
 }

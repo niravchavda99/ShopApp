@@ -6,13 +6,22 @@ import '../models/Category.dart';
 import '../models/Brand.dart';
 
 class Products with ChangeNotifier {
-  List<Product> _products = [
-    Product(
+  Map<String, Product> _products = {
+    '607d84d25d6eb303c4b3e617': Product(
       id: '607d84d25d6eb303c4b3e617',
       title: 'White Earphones',
       rating: 1.5,
-      brand: Brand(id: '607d4ffc5cc5682098258ab6', name: 'WhiteFish'),
-      category: Category(id: '607d4ffc5cc5682098258ab4', name: 'Electronics'),
+      brand: Brand(
+        id: '607d4ffc5cc5682098258ab6',
+        name: 'White Fish',
+        imageUrl: 'https://www.iconsdb.com/icons/preview/white/fish-8-xxl.png',
+      ),
+      category: Category(
+        id: '607d4ffc5cc5682098258ab4',
+        name: 'Electronics',
+        imageUrl:
+            'https://www.iconsdb.com/icons/preview/black/electronics-xxl.png',
+      ),
       offers: [
         Offer(
           offerType: OfferType.BankOffer,
@@ -60,11 +69,20 @@ class Products with ChangeNotifier {
       discount: 7.5,
       tags: ['earphones', 'headset', 'white'],
     ),
-    Product(
+    '607d84d95d6eb303c4b3e619': Product(
       id: '607d84d95d6eb303c4b3e619',
       title: 'Matte Black Headphones',
-      brand: Brand(id: '607d7b7be9489b13d02f66fc', name: 'BlackHorse'),
-      category: Category(id: '607d4ffc5cc5682098258ab4', name: 'Electronics'),
+      brand: Brand(
+        id: '607d7b7be9489b13d02f66fc',
+        name: 'Black Horse',
+        imageUrl: 'https://image.flaticon.com/icons/png/512/32/32707.png',
+      ),
+      category: Category(
+        id: '607d4ffc5cc5682098258ab4',
+        name: 'Electronics',
+        imageUrl:
+            'https://www.iconsdb.com/icons/preview/black/electronics-xxl.png',
+      ),
       rating: 4,
       offers: [
         Offer(
@@ -115,12 +133,21 @@ class Products with ChangeNotifier {
       discount: 10,
       tags: ['headphones', 'black', 'bluetooth', 'wireless'],
     ),
-    Product(
+    '607d861022958819cc9b8278': Product(
       id: '607d861022958819cc9b8278',
       title: 'Solid Men Henley Neck Red T-Shirt',
       rating: 4.5,
-      brand: Brand(id: '607d7b7be9489b13d02f66fd', name: 'RedCherry'),
-      category: Category(id: '607d4ffc5cc5682098258ab6', name: 'Fashion'),
+      brand: Brand(
+        id: '607d7b7be9489b13d02f66fd',
+        name: 'Red Cherry',
+        imageUrl: 'https://www.iconsdb.com/icons/preview/red/cherry-xxl.png',
+      ),
+      category: Category(
+        id: '607d4ffc5cc5682098258ab6',
+        name: 'Fashion',
+        imageUrl:
+            'https://cdn4.iconfinder.com/data/icons/geometrica-1/48/crutch-coat-hanger-dress-512.png',
+      ),
       description: '',
       offers: [
         Offer(
@@ -165,12 +192,21 @@ class Products with ChangeNotifier {
       discount: 21.5,
       tags: ['tshirt', 'shirt', 'men', 'clothing', 'red'],
     ),
-    Product(
+    '607d861a22958819cc9b827a': Product(
       id: '607d861a22958819cc9b827a',
       title: '3 Seater Sofa  (Finish Color - Dark Grey)',
       rating: 5,
-      brand: Brand(id: '607d4ffc5cc5682098258ab4', name: 'BlueDragon'),
-      category: Category(id: '607d7b7be9489b13d02f66fc', name: 'Home'),
+      brand: Brand(
+        id: '607d4ffc5cc5682098258ab4',
+        name: 'Blue Dragon',
+        imageUrl:
+            'https://pixfeeds.com/images/astrology/zodiac-signs/1200-92040747-dragon-zodiac-sign.jpg',
+      ),
+      category: Category(
+        id: '607d7b7be9489b13d02f66fc',
+        name: 'Home',
+        imageUrl: 'https://www.iconsdb.com/icons/preview/black/home-xxl.png',
+      ),
       description: '',
       features: {
         "Secondary Material": "Solid Wood",
@@ -217,12 +253,22 @@ class Products with ChangeNotifier {
       price: 8499,
       tags: ['sofa', 'living', 'room'],
     ),
-    Product(
+    '607d862122958819cc9b827c': Product(
       id: '607d862122958819cc9b827c',
       title: 'L Frost Free Double Door 3 Star Convertible Refrigerator',
       rating: 4.5,
-      brand: Brand(id: '607d4ffc5cc5682098258ab5', name: 'OrangeJelly'),
-      category: Category(id: '607d4ffc5cc5682098258ab4', name: 'Electronics'),
+      brand: Brand(
+        id: '607d4ffc5cc5682098258ab5',
+        name: 'Orange Jelly',
+        imageUrl:
+            'https://image.freepik.com/free-vector/orange-slice-jelly-candy-icon_100011-189.jpg',
+      ),
+      category: Category(
+        id: '607d4ffc5cc5682098258ab4',
+        name: 'Electronics',
+        imageUrl:
+            'https://www.iconsdb.com/icons/preview/black/electronics-xxl.png',
+      ),
       description:
           'Beat the heat this summer with this double-door 3-in-1 convertible refrigerator. It provides you with extra cooling space by easily converting your freezer into a fridge. Moreover, the built-in deodorizer of this product removes odours and keeps your food fresh. Furthermore, the all-around cooling system optimally cools every nook and cranny of this refrigerator.',
       features: {
@@ -274,12 +320,22 @@ class Products with ChangeNotifier {
       discount: 5,
       tags: ['fridge', 'refrigerator', 'double', 'door'],
     ),
-    Product(
+    '607d85e0e23b9720ac65cb59': Product(
       id: '607d85e0e23b9720ac65cb59',
       title: 'Jewel Set (White)',
       rating: 2,
-      brand: Brand(id: '607d4ffc5cc5682098258ab4', name: 'BlueDragon'),
-      category: Category(id: '607d4ffc5cc5682098258ab5', name: 'Others'),
+      brand: Brand(
+        id: '607d4ffc5cc5682098258ab4',
+        name: 'Blue Dragon',
+        imageUrl:
+            'https://pixfeeds.com/images/astrology/zodiac-signs/1200-92040747-dragon-zodiac-sign.jpg',
+      ),
+      category: Category(
+        id: '607d4ffc5cc5682098258ab5',
+        name: 'Others',
+        imageUrl:
+            'https://cdn1.iconfinder.com/data/icons/smoothline-action/30/action_028-detail-more-info-others-512.png',
+      ),
       description: '',
       offers: [
         Offer(
@@ -324,28 +380,50 @@ class Products with ChangeNotifier {
       discount: 3,
       tags: ['jewellery', 'white', 'set'],
     ),
-  ];
+  };
 
   List<Product> get products {
-    return [..._products];
+    return [..._products.values];
   }
 
   List<Product> fetchByBrand(Brand brand) {
-    return _products.where((p) => p.brand.id == brand.id).toList();
+    return _products.values.where((p) => p.brand.id == brand.id).toList();
   }
 
   List<Product> fetchByCategory(Category category) {
-    return _products.where((p) => p.category.id == category.id).toList();
+    return _products.values.where((p) => p.category.id == category.id).toList();
   }
 
   Product findById(String id) {
-    return _products.firstWhere((product) => product.id == id, orElse: null);
+    return _products[id];
   }
 
   Set<Brand> getBrandsByCategory(Category category) {
-    return _products
+    return _products.values
         .where((p) => p.category.id == category.id)
         .map((p) => p.brand)
         .toSet();
+  }
+
+  void decreaseQuantity(String id, int qtyToDecrease) {
+    _products.update(
+        id,
+        (p) => Product(
+              brand: p.brand,
+              category: p.category,
+              description: p.description,
+              discount: p.discount,
+              features: p.features,
+              id: p.id,
+              imageUrl: p.imageUrl,
+              offers: p.offers,
+              price: p.price,
+              rating: p.rating,
+              tags: p.tags,
+              title: p.title,
+              numberInStock: (p.numberInStock - qtyToDecrease) > 0
+                  ? p.numberInStock - qtyToDecrease
+                  : 0,
+            ));
   }
 }
